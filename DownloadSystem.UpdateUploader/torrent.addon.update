@@ -1,0 +1,7 @@
+﻿root ../../../DownloadSystem/bin/Debug
+add MonoTorrent.Dht.dll
+add MonoTorrent.Dht.pdb
+add MonoTorrent.dll
+mkdir addons
+add addons/TorrentDownloader.pdb
+add addons/TorrentDownloader.dll

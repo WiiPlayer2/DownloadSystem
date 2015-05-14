@@ -1,0 +1,9 @@
+﻿root ../../../DownloadSystem/bin/Debug
+mkdir addons
+add addons/NyaaAnimeAdder.pdb
+add addons/NyaaAnimeAdder.dll
+add NyaaTools.dll
+add NyaaTools.pdb
+add HtmlAgilityPack.dll
+add HtmlAgilityPack.pdb
+add HtmlAgilityPack.xml

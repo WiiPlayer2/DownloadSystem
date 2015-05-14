@@ -1,0 +1,17 @@
+﻿root ../../../DownloadSystem/bin/Debug
+mkdir addons
+add addons/WebInterface.dll
+add addons/WebInterface.pdb
+mkdir html
+pack html
+p.add icon.png
+p.add index.html
+p.mkdir css
+p.add css/index.css
+p.mkdir img
+p.add img/header.png
+p.mkdir js
+p.add js/index.js
+p.end html/html.zip
+add DarkLib.dll
+add DarkLib.pdb

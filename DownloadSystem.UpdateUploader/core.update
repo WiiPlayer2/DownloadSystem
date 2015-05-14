@@ -1,0 +1,7 @@
+﻿root ../../../DownloadSystem/bin/Debug
+add DownloadSystem.exe
+add DownloadSystem.exe.config
+add DownloadSystem.pdb
+add DownloadSystem.Shared.dll
+add DownloadSystem.Shared.pdb
+add Jayrock.Json.dll
