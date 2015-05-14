@@ -34,8 +34,16 @@ namespace DownloadSystem.UpdateUploader
 
         private static void Update(string file, string path)
         {
-            var script = new Script(file);
-            script.Excecute("dark-link.info", "root", new PrivateKeyFile("id_rsa"), path);
+            try
+            {
+                var script = new Script(file);
+                script.Excecute("dark-link.info", "root", new PrivateKeyFile("id_rsa"), path);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("{0}: {1}", e.GetType().FullName, e.Message);
+                Console.WriteLine("Skipping {0}...", file);
+            }
         }
 
         private static void UpdateAddon(string name)

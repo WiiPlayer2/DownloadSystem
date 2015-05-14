@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DownloadSystem.Properties;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace DownloadSystem
 {
-    class UpdateSystem
+    static class UpdateSystem
     {
-        public bool IsUpToDate()
+        public static bool IsUpToDate()
         {
             if (Directory.Exists("./update"))
             {
@@ -23,12 +24,12 @@ namespace DownloadSystem
             return true;
         }
 
-        public bool IsUpdating()
+        public static bool IsUpdating()
         {
             return File.Exists("update.lock");
         }
 
-        public void Update()
+        public static void Update()
         {
             var tmpFile = Path.GetTempFileName();
             var tmpExe = string.Format("{0}.exe", tmpFile);
@@ -46,7 +47,7 @@ namespace DownloadSystem
                 Process.Start(tmpExe, string.Format("{0} \"{1}\" {2}",
                     Process.GetCurrentProcess().Id,
                     Environment.CurrentDirectory,
-                    true));
+                    Settings.Default.UpdaterAutoRestart));
             }
             else
             {
@@ -54,7 +55,7 @@ namespace DownloadSystem
                     tmpExe,
                     Process.GetCurrentProcess().Id,
                     Environment.CurrentDirectory,
-                    true));
+                    Settings.Default.UpdaterAutoRestart));
             }
             Console.WriteLine("!");
         }

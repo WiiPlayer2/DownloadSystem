@@ -11,10 +11,9 @@ namespace DownloadSystem
     {
         static void Main(string[] args)
         {
-            var update = new UpdateSystem();
-            if (!update.IsUpdating())
+            if (!UpdateSystem.IsUpdating())
             {
-                if (update.IsUpToDate())
+                if (UpdateSystem.IsUpToDate())
                 {
                     Console.WriteLine("Starting DownloadSystem");
 
@@ -26,7 +25,7 @@ namespace DownloadSystem
                 {
                     Console.WriteLine("Starting to update DownloadSystem");
 
-                    update.Update();
+                    UpdateSystem.Update();
                 }
             }
         }

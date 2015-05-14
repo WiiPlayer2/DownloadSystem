@@ -13,6 +13,7 @@ namespace DownloadSystem.Updater
         static void Main(string[] args)
         {
             FileStream fstream = null;
+            bool autorestart = false;
             try
             {
                 Console.WriteLine("Updating DownloadSystem");
@@ -27,6 +28,7 @@ namespace DownloadSystem.Updater
 
                 var pid = int.Parse(args[0]);
                 var folder = args[1];
+                autorestart = bool.Parse(args[2]);
 
                 //Console.WriteLine(pid);
                 //Console.WriteLine(folder);
@@ -70,6 +72,18 @@ namespace DownloadSystem.Updater
             if(File.Exists("update.lock"))
             {
                 File.Delete("update.lock");
+            }
+
+            if (autorestart)
+            {
+                if (Environment.OSVersion.VersionString.Contains("Windows"))
+                {
+                    Process.Start("DownloadSystem.exe");
+                }
+                else
+                {
+                    Process.Start("mono", "DownloadSystem.exe");
+                }
             }
         }
 

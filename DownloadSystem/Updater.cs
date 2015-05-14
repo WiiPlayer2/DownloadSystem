@@ -1,4 +1,5 @@
-﻿using DownloadSystem.Shared;
+﻿using DownloadSystem.Properties;
+using DownloadSystem.Shared;
 using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using System;
@@ -11,7 +12,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-
 using Timer = System.Timers.Timer;
 
 namespace DownloadSystem
@@ -33,8 +33,13 @@ namespace DownloadSystem
                     (s, o) => up.LastAddonUpdates = o
                         .ToDictionary<Tuple<string, string>, string, string>(
                         o2 => o2.Item1, o2 => o2.Item2));
-                //RegisterVar<bool>("autorestart",
-                //    s => )
+                RegisterVar<bool>("autorestart",
+                    s => Settings.Default.UpdaterAutoRestart,
+                    (s, o) =>
+                    {
+                        Settings.Default.UpdaterAutoRestart = o;
+                        Settings.Default.Save();
+                    });
                 RegisterVar<bool>("autoshutdown", up, "AutoShutdown");
             }
         }
@@ -66,6 +71,7 @@ namespace DownloadSystem
 
             LastCoreUpdate = "";
             LastAddonUpdates = new Dictionary<string, string>();
+            AutoShutdown = true;
             md5 = MD5.Create();
             timer = new Timer(7200000);
             timer.AutoReset = true;
@@ -82,12 +88,17 @@ namespace DownloadSystem
         {
             timer.Stop();
 
-            if(!Update())
+            if (!Update() || !AutoShutdown)
             {
                 timer.Start();
             }
             else
             {
+                if(Settings.Default.UpdaterAutoRestart)
+                {
+                    UpdateSystem.Update();
+                }
+
                 System.Shutdown();
             }
         }
@@ -116,7 +127,7 @@ namespace DownloadSystem
         {
             var writer = new StreamWriter("update.addons");
             var list = new List<string>();
-            foreach(var a in AddonDatabse.GetAddons())
+            foreach (var a in AddonDatabse.GetAddons())
             {
                 writer.WriteLine(a.Name);
                 list.Add(a.Name);
@@ -150,7 +161,7 @@ namespace DownloadSystem
             }
             catch { }
 
-            foreach(var a in updateAddons)
+            foreach (var a in updateAddons)
             {
                 try
                 {
@@ -198,12 +209,12 @@ namespace DownloadSystem
         {
             var jarr = GetFiles(string.Format("{0}/md5.json", urlBase));
 
-            foreach(JsonObject j in jarr)
+            foreach (JsonObject j in jarr)
             {
                 var path = (string)j["path"];
                 var md5str = (string)j["md5"];
                 var localmd5str = GetLocalOrUpdateMD5Hash(path);
-                if(localmd5str != md5str)
+                if (localmd5str != md5str)
                 {
                     DownloadFile(urlBase, path);
                 }
@@ -222,11 +233,11 @@ namespace DownloadSystem
         {
             var localFile = string.Format("./{0}", file);
             var updateFile = string.Format("./update/{0}", file);
-            if(File.Exists(updateFile))
+            if (File.Exists(updateFile))
             {
                 return GetLocalMD5Hash(updateFile);
             }
-            else if(File.Exists(localFile))
+            else if (File.Exists(localFile))
             {
                 return GetLocalMD5Hash(localFile);
             }
@@ -289,6 +300,9 @@ namespace DownloadSystem
 
         public void ConfigLoaded()
         {
+            config.SaveConfig("autoshutdown");
+            config.SaveConfig("autorestart");
+
             if (File.Exists("update.addons"))
             {
                 LoadUpdateAddons();
@@ -299,9 +313,9 @@ namespace DownloadSystem
             }
             CheckUpdateAddons();
 
-            foreach(var addon in updateAddons)
+            foreach (var addon in updateAddons)
             {
-                if(!LastAddonUpdates.ContainsKey(addon))
+                if (!LastAddonUpdates.ContainsKey(addon))
                 {
                     LastAddonUpdates[addon] = "";
                 }
